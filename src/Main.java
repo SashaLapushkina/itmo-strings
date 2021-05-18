@@ -2,7 +2,7 @@ public class Main {
     public static void main(String args[]) {
         StringList string = new StringList("абвгдеёжзийклмнопрстуфхцчшщЪыьэюя");
         try { //Я не уверена, нужен ли здесь try
-            System.out.println(string.substring(5, 35));
+            System.out.println(string.substring(5, 31));
             string.insert(30, "1234");
             string.setCharAt(1, '0');
             string.append("abc");
@@ -70,26 +70,32 @@ class StringList{
 
     //Поиск блока по индексу
     private Symbol findSymbol(int index){
-        if (index < 0) throw new MyException("Индекс за границами строки");
+        if (index < 0) return null;
         StringItem x = head;
         int sum = 0;
         while (x != null && sum + x.count < index) {
             sum += x.count;
             x = x.next;
         }
-        if (x == null) throw new MyException("Индекс за границами строки");
-        return new Symbol (index - sum, x);
+        if (x == null) return null;
+        else return new Symbol (index - sum, x);
     }
 
     //Символ по индексу
     public char charAt(int index) {
         Symbol symbol = findSymbol(index);
+
+        if (symbol == null) throw new MyException("Индекс за границами строки");
+
         return symbol.item.symbols[symbol.index];
     }
 
     //Заменить символ по индексу
     public void setCharAt(int index, char ch) {
         Symbol symbol = findSymbol(index);
+
+        if (symbol == null) throw new MyException("Индекс за границами строки");
+
         symbol.item.symbols[symbol.index] = ch;
     }
 
@@ -99,6 +105,8 @@ class StringList{
 
         Symbol symbolStart = findSymbol(start);
         Symbol symbolEnd = findSymbol(end);
+
+        if (symbolStart == null || symbolEnd == null) throw new MyException("Индекс за границами строки");
 
         StringList newList = new StringList();
         newList.head = new StringItem();
@@ -178,6 +186,8 @@ class StringList{
         } else {
             //Нашли символ
             Symbol symbol = findSymbol(index);
+
+            if (symbol == null) throw new MyException("Индекс за границами строки");
 
             //Скопировали вторую половину блока в новый блок
             StringItem newItem = new StringItem();
